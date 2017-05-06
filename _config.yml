@@ -1,0 +1,21 @@
+# Site settings
+title: TuoX Blog
+header-img: img/home-bg.jpg
+email: 120549827@qq.com
+description: "从前到现在 一直都在"
+baseurl: ""
+url: "https://linzhiming0826.github.io"
+github_username:  linzhiming0826
+email_username:  120549827@qq.com
+
+# Baidu Analytics
+baidu_analytics: true
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+paginate: 5
+exclude: ["less","node_modules","Gruntfile.js","package.json","README.md"]
+
+gems: [jekyll-paginate, jekyll-feed]
