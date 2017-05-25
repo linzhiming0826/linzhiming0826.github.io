@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "Python web框架flask之调试"
-subtitle:   "vs code下flask的调试"
+subtitle:   "vs code下flask的Debug"
 date:       "2017-05-25"
 author:     "TuoX"
 header-img: "img/post-6/bg.png"
