@@ -1,0 +1,59 @@
+---
+layout:     post
+title:      "自己搭建一个git服务器"
+subtitle:   "gitlab在ubantu下的搭建"
+date:       "2017-06-09"
+author:     "TuoX"
+header-img: "img/post-9/bg.png"
+---
+
+<p>github是全球最大的程序员代码交流社区.那如果我们想搭建一个这样有web界面版本的git服务器可以嘛,答案是可以的.今天跟小伙伴们介绍的就是gitlab在ubantu下的搭建.</p>
+<p>首先我们得安装跟配置一下必要的工具.</p>
+```ubantu
+apt-get install curl openssh-server ca-certificates postfix
+```
+<p>这里我少了sudo,因为我是管理员账号，所以不需要输入这个命令.</p>
+<p>安装的时候会弹出一个提示,让你选择安装哪种服务,我直接选择了本地,其他的配置大家也可以尝试选择,就是配置起来相对麻烦一点.</p>
+<p><img src="/img/post-9/choice.png"/></p>
+<p>其次是把gitlab包加入到配置中,接着我们对它进行安装.</p>
+<p>加入配置</p>
+```ubantu
+curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.deb.sh | sudo bash
+```
+<p>进行安装</p>
+```ubantu
+apt-get install gitlab-ee
+```
+<p>接下来大家可能会遇到一种情况,就是加载这个好慢啊,有一种办法,就是直接在官网下载对应的文件包.然后呢,到该目录下执行下安装文件就可以了.</p>
+<a href="https://packages.gitlab.com/gitlab/gitlab-ee">下载地址</a>
+<p>以下为安装的命令</p>
+```ubantu
+dpkg -i gitlab-ee-XXX.deb
+```
+<p>以上任务都完成之后,我们得进行一下,gitlab的配置,我这里呢,暂时就改了对外开放的地址.邮箱之类的根据配置一看就懂,这里就不详细介绍啦.</p>
+```ubantu
+vim /etc/gitlab/gitlab.rb
+```
+<p><img src="/img/post-9/config.png"/></p>
+<ul>
+<li>
+第一个就是我们访问的网址,我没有绑定域名,直接用ip访问方式,直接占用6666端口.
+</li>
+<li>
+第二个就是配置邮件的信息.这里就不介绍,看着说明也知道该怎么配置了.
+</li>
+</ul>
+<p>紧接着,让我们配置的规则生效一下吧.</p>
+```ubantu
+gitlab-ctl reconfigure
+```
+<p>只要有重新配置都得执行一下这个命令.偶尔还需要执行一下下面的命令,就是重启一下服务.</p>
+```ubantu
+/etc/init.d/postfix restart
+```
+<p>最后的最后就是见证奇迹的时候到了,浏览器中输入我们刚刚配置的网址.</p>
+<p><img src="/img/post-9/result.png"/></p>
+<p>因为我第一次访问的时候没有截图,所以直接截图了一个我创建项目的图片了.第一次访问会让你重置一下密码,账号是root,密码就是重置之后的.</p>
+<p>温馨提示:第一次访问如果出现502,Whoops, GitLab is taking too much time to respond. </p>
+<p>这种一般是配置的端口被占用,默认的是8080,只要不冲突就行,端口号随便改.</p>
+<p>到这里我们的第一个git服务器就搭建好啦!接下来就是根据大家的喜好,自己配置一下邮箱啊,之类的.</p>
