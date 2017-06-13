@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "搭建vps服务器-提前告知"
+title:      "搭建代理服务器-提前告知"
 subtitle:   "一步一步实现秒级换ip"
 date:       "2017-06-12"
 author:     "TuoX"
