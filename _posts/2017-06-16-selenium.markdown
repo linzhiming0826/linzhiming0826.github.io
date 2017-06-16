@@ -1,0 +1,14 @@
+---
+layout:     post
+title:      "自动化系列之selenium"
+subtitle:   "selenium下phantomjs、firefox"
+date:       "2017-06-16"
+author:     "TuoX"
+header-img: "img/post-13/bg.png"
+---
+<p>今天我们来学习一下，一个web测试工具selenium。该工具主要用于自动化测试，当然目前我用到的功能并不是自动化测试，只是作为学习使用。</p>
+<p>说白了其实它就是可以模拟浏览器的各种操作。请求、输入、点击、滑动、截图等。</p>
+<p>接下来我们说下selenium调用firefox以及phantomjs的实现。</p>
+<p>在python下使用，异常的轻松。</p>
+<h2>FireFox</h2>
+<p>火狐浏览器。想必大家都很清楚，开源的浏览器，也是程序员最喜欢的浏览器之一。</p>
