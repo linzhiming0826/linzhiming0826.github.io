@@ -81,12 +81,11 @@ vi /etc/supervisor/conf.d/test.conf
 ```linux
 [program:test]
 command=python /root/test.py ;需要执行的命令
-user=root            ; 启动的用户名
+user=root            ; 用哪个用户启动
 autostart = true     ; 在 supervisord 启动的时候也自动启动
 startsecs = 5        ; 启动 5 秒后没有异常退出，就当作已经正常启动了
 autorestart = true   ; 程序异常退出后自动重启
 startretries = 3     ; 启动失败自动重试次数，默认是 3
-user = leon          ; 用哪个用户启动
 redirect_stderr = true  ; 把 stderr 重定向到 stdout，默认 false
 ```
 最后启动我们刚刚添加那个配置
