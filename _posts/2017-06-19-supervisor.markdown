@@ -112,9 +112,9 @@ ps -ef|grep test
 
 supervisord命令：
 ```linux
-service supervisor start
-service supervisor restart
-service supervisor stop
+service supervisord start
+service supervisord restart
+service supervisord stop
 ```
 
 supervisorctl命令:
