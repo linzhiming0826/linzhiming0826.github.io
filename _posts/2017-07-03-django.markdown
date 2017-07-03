@@ -1,0 +1,128 @@
+---
+layout:     post
+title:      "初探Django"
+subtitle:   "开发中遇到的一些问题的记录"
+date:       "2017-07-03"
+author:     "TuoX"
+header-img: "img/post-17/bg.png"
+---
+又好久没有写文章了，最近在忙什么呢，就是想搭建一个自己的管理后台，再加上思考一些事情就耽搁了。今天就把昨天写的一个后台demo中注意的点记录下。
+
+***
+
+python拥有许多优秀的web框架，比如flask跟django，其中django最为成熟，也最重型，而flask是兴起之秀，以它简单，高效，定制化有种迎头赶上的趋势。我的观点是，django适合写后台，而flask适合写api。因为api越是轻量级越好，而后台越是成熟越好。
+
+### django的测试环境跟生产环境
+
+    django配置文件settings中的DEBUG就是标记是否调试模式。我们在生产环境可不能开启DEBUG模式，这样子不仅性能低下，而且会把一些不友好的错误信息给throw出来。
+    在debug模式下，django会把我们的一些静态资源环境配置好，所以没什么问题。但是一关闭debug模式之后，会发现那些静态资源全部变成乱码了。
+    解决的办法：首先设置下配置文件，然后用nginx等托管服务软件来用静态文件的映射，不走wsgi。
+
+
+#### 配置文件
+
+    # Static files (CSS, JavaScript, Images)
+    # https://docs.djangoproject.com/en/1.11/howto/static-files/
+    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+    STATIC_URL = '/static/'
+
+    # Extra places for collectstatic to find static files.
+    STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
+
+    
+#### nginx的配置
+
+    1.我们创建一个配置文件
+
+
+    vi /etc/nginx/conf.d/cms.conf
+
+    
+    2.输入以下内容
+
+
+    server {
+        server_name cms.tuox.vip;
+        listen 80;
+
+        location / {
+            proxy_pass_header Server;
+            proxy_redirect off;
+            proxy_pass http://127.0.0.1:8900;
+        }
+        location /static/ {
+        alias /root/publish/cms/staticfiles/;
+        }
+    }
+
+
+    3.重启下nginx服务器
+
+
+    service nginx restart
+
+
+    除了上面的方向代理以及静态资源的配置，我们来需要确定下nginx的配置，因为许多nginx的配置都不是以root运行的，我们必须保证在root下才可以，不然解决了403的问题，也会出现404，因为没有足够的权限，这个是最让人抓狂的。
+
+    查看配置文件
+
+    vi /etc/nginx/nginx.conf
+
+
+![nginx.conf](/img/post-17/nginx.png)
+
+
+    如果user栏中出现的不是root，改成root，然后重启下配置就好了。
+
+### django的csrf问题
+
+    django为了安全考虑加入了csrf安全机制，平时的ajax访问都是出现403错误，其实解决办法也有就是直接关闭csrf验证。但是这样子做就反其道而行了，不建议这么做，所以我也不介绍了，哈哈。于是我查了下官网文档，找到了解决方案。
+    我们可以在发起请求时都加入一个csrftoken参数就可以完美的解决问题了。
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    function sameOrigin(url) {
+        var host = document.location.host;
+        var protocol = document.location.protocol;
+        var sr_origin = '//' + host;
+        var origin = protocol + sr_origin;
+        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+            (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+            !(/^(\/\/|http:|https:).*/.test(url));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    代码的意思是在本地cookie中查找到名字为csrftoken的cookie，并且进行相应的合法性判断，最后将csrftoken加入请求的头部。
+
+    好了，以后的发起请求问题解决了，但是这个是得在有cookie的情况下才行，那用户第一次访问的时候怎么办呢。没事，官网文档一样有解决的办法，可以在模板中加入{\% csrf_token \%}(斜杠去掉，这里是转义，代码不能这么写)，告诉页面，需要提供这个csrf_token参数。官网的建议是在模板中多加这个tag。
+
+### The End
+
+    今天就分享到这里。希望这篇文章可以帮助需要帮助的人。
