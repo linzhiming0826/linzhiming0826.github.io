@@ -63,7 +63,7 @@ python拥有许多优秀的web框架，比如flask跟django，其中django最为
     service nginx restart
 
 
-    除了上面的方向代理以及静态资源的配置，我们来需要确定下nginx的配置，因为许多nginx的配置都不是以root运行的，我们必须保证在root下才可以，不然解决了403的问题，也会出现404，因为没有足够的权限，这个是最让人抓狂的。
+    除了上面的反向代理以及静态资源的配置，我们来需要确定下nginx的配置，因为许多nginx的配置都不是以root运行的，我们必须保证在root下才可以，不然解决了403的问题，也会出现404，因为没有足够的权限，这个是最让人抓狂的。
 
     查看配置文件
 
@@ -122,6 +122,25 @@ python拥有许多优秀的web框架，比如flask跟django，其中django最为
     代码的意思是在本地cookie中查找到名字为csrftoken的cookie，并且进行相应的合法性判断，最后将csrftoken加入请求的头部。
 
     好了，以后的发起请求问题解决了，但是这个是得在有cookie的情况下才行，那用户第一次访问的时候怎么办呢。没事，官网文档一样有解决的办法，可以在模板中加入{\% csrf_token \%}(斜杠去掉，这里是转义，代码不能这么写)，告诉页面，需要提供这个csrf_token参数。官网的建议是在模板中多加这个tag。
+
+### 一些常用命令
+
+    django-admin.py 跟 python manage.py 可以查看一些常用的命令
+
+    django-admin.py startproject cms 创建一个名字为cms的项目
+
+    django-admin.py startapp extend_user 创建一个名字为extend_user的app
+
+    python manage.py makemigrations **** 设置原型,只是设置一下文件
+
+    python manage.py migrate **** 进行原型的修改载入，其实是对数据库的操作
+
+    python manage.py createsuperuser 创建管理员账户
+
+    python manage.py collectstatic 拷贝静态资源文件
+
+    python manage.py runserver 127.0.0.1:8000 启动项目 ip为127.0.0.1 端口号为8000
+    
 
 ### The End
 
