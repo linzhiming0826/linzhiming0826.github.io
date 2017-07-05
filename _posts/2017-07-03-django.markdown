@@ -125,11 +125,11 @@ python拥有许多优秀的web框架，比如flask跟django，其中django最为
 
 ### 一些常用命令
 
-    django-admin.py 跟 python manage.py 可以查看一些常用的命令
+    django-admin 跟 python manage.py 可以查看一些常用的命令
 
-    django-admin.py startproject cms 创建一个名字为cms的项目
+    django-admin startproject cms 创建一个名字为cms的项目
 
-    django-admin.py startapp extend_user 创建一个名字为extend_user的app
+    django-admin startapp extend_user 创建一个名字为extend_user的app
 
     python manage.py makemigrations **** 设置原型,只是设置一下文件
 
