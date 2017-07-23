@@ -100,7 +100,7 @@ REST本身并没有创造新的技术、组件或服务，而隐藏在RESTful背
             util.py     # 一些通用的使用方法
 ***
 
-更多的用法，大家可以看下flask_restful的官网 [链接](https://flask-restful.readthedocs.io/en/0.3.6/)
+更多的用法，大家可以看下flask_restful的官网 [链接](https://flask-restful.readthedocs.io/en/0.3.5/)
 
 ### 源码地址
 
