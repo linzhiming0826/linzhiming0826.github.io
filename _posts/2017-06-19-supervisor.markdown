@@ -80,7 +80,8 @@ vi /etc/supervisor/conf.d/test.conf
 ```
 ```linux
 [program:test]
-command=python /root/test.py ;需要执行的命令
+directory = /root    ; 运行的目录
+command=python test.py ;需要执行的命令
 user=root            ; 用哪个用户启动
 autostart = true     ; 在 supervisord 启动的时候也自动启动
 startsecs = 5        ; 启动 5 秒后没有异常退出，就当作已经正常启动了
