@@ -21,7 +21,7 @@ header-img: "img/post-15/bg.png"
 
     以上内容来自于百度百科，我好像在念稿。
 
-    嗯哼~
+    ~~~~~~
 
     redis以其出色的性能以及多元化的功能风靡移动互联网，短短的时间，直接甩开Memcached，成为主流nosql数据库的代表。它的功能不仅限于缓存，还有用于热搜榜（SortedSet）、队列（list）、记录用户行为（SETBIT）等。
 
