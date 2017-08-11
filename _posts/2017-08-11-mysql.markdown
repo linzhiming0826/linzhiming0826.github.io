@@ -1,0 +1,150 @@
+---
+layout:     post
+title:      "浅谈mysql"
+subtitle:   "mysql的安装与优化"
+date:       "2017-08-11"
+author:     "TuoX"
+header-img: "img/post-23/bg.png"
+---
+
+这两天一有点时间就停不下来，需要分享点东西的节奏。其实这几天讲的redis、mongodb、mysql都是以前安装过的，当时只是粗略的记录了下，正好有时间，那我就想着写下来，整在一起。
+
+***
+
+由于mysql的安装实在是太简单了，所以今天打算加入一些语句优化的观点。各位看官多多包含。
+
+### 安装
+
+    输入命令
+
+    apt-get install mysql-server
+
+    安装mysql-server会自动安装上其他的一些服务，所以一条命令就够了。
+
+    安装的过程中会提示出输入密码，这个就是我们后面登录所需要的密码。
+
+### 配置
+
+    1.开放端口
+
+        vi /etc/mysql/mysql.conf.d/mysqld.cnf
+
+        把bind-address = 127.0.0.1注释掉
+
+    2.重启服务
+
+        service mysql restart
+
+### 一些注意点
+
+    这次的安装我是在本地开发机的，发现连接速度实在是慢到没朋友。因为是局域网，所以排除网络问题。于是去官网找答案，之后发现有这面这段文字。
+
+    How MySQL uses DNS
+    When a new thread connects to mysqld, mysqld will spawn a new thread to handle the request. This thread will first check if the hostname is in the hostname cache. If not the thread will call gethostbyaddr_r() and gethostbyname_r() to resolve the hostname.
+    If the operating system doesn't support the above thread-safe calls, the thread will lock a mutex and call gethostbyaddr() and gethostbyname() instead. Note that in this case no other thread can resolve other hostnames that is not in the hostname cache until the first thread is ready.
+    You can disable DNS host lookup by starting mysqld with –skip-name-resolve. In this case you can however only use IP names in the MySQL privilege tables.
+    If you have a very slow DNS and many hosts, you can get more performance by either disabling DNS lookop with –skip-name-resolve or by increasing the HOST_CACHE_SIZE define (default: 128) and recompile mysqld.
+    You can disable the hostname cache with –skip-host-cache. You can clear the hostname cache with FLUSH HOSTS or mysqladmin flush-hosts.
+    If you don't want to allow connections over TCP/IP, you can do this by starting mysqld with –skip-networking.
+
+    这段很长，但是其中的倒数第二个if就是我们需要找到的答案。意思是这样的：如果你有一个非常缓慢的DNS和许多主机，那你可以通过禁用DNS解析（skip-name-resolve）或者增加HOST_CACHE_SIZE的定义（默认是：128）并编译来获取更好的性能。
+
+    那我们直接禁止DNS解析，只能通过ip来访问，就可以解决问题。
+
+    1.新增配置
+
+        vi /etc/mysql/mysql.conf.d/mysqld.cnf
+
+        在[mysqld]下新增一个skip-name-resolve配置
+
+    2.重启服务
+
+        service mysql restart
+
+### 优化
+
+    mysql的优化是非常有必要的。记得曾经待过的一家公司，主要用的就是mysql主从，所以对于语句的写法要求非常严格。一切的逻辑操作全部都是放在程序中处理，对于mysql的语句查询时间必须控制在0.0*秒内。
+    接下来说的就是一些平时大家都不是很注意的点，一些基础的语句优化，这些就不重复了。
+
+    1.善用EXPLAIN
+
+        EXPLAIN是什么，从字面上就很好理解，是解释的意思。在数据量大的情况下，要学会用EXPLAIN来分析语句。EXPALIN查询出来的结果会告诉你数据是怎么进行搜索的、索引是怎么用的、用到了哪些索引等信息。
+        
+        接下来让我们看几张图来加强下记忆。
+
+![](/img/post-23/explain1.png)
+
+![](/img/post-23/explain2.png)
+
+        图1用的是主键，就是聚集索引
+
+        图2用的是复合索引，也就是非聚集索引
+
+        里面rows这个必须要解释下，rows是mysql认为必须要逐行去检查和判断的记录的条数。
+
+        这也就是说它的结果条数并不是真正查询出来的条数，所以rows越靠近结果条数，那么说明效率越好。
+
+    2.善用LIMIT 
+
+        当你查询表的时候，如果不是必要，那么加上LIMIT限制查找的行数，不失为一个好的优化方法。
+
+        不懂为什么在这里，我会想到之前遇到的一个情况：某接口没限制请求的数量大小，所以被恶意攻击，一下子获取几十万条的数据，造成数据库的卡顿，锁表等问题。
+    
+    3.SELECT 查询少用 *
+
+        相信每次查询并不是需要所有的列，所以只需要查询需要的列就行了。
+
+    4.类型尽量使用长度小的，并且尽量是ENUM而不是VARCHAR
+
+        枚举的话是表示十分有效的类型，当然它在数据库中可以表示为TINYINT。首先值类型的索引效率比字符型的索引高，其次值类型看起来比字符类型更加直观，再者语法写起来也好看。
+
+        我曾经见过查找一种类型需要这么做 select name from table where type in('1111','222','3333','44444',....)
+
+        也许这几个看起来不可怕，但是你想如果类型是100个的话该如何，一个语句会吓屎人。
+
+        但是如果是值类型那就不一样了，你可以这么做 select name from table where type between 1 and 4
+
+    5.字段都设置默认值，并且为 NOT NULL
+
+        相信很多程序员都喜欢把字段设置成NULL，这种情况除非不得已而为之。
+        
+        1.NULL类型它占用空间。
+
+        2.NULL不等于Empty。
+
+        3.NULL影响索引的使用。
+
+        但是在Oracle中NULL 和 Empty的字符串是一样的......
+
+    6.如果列的字段超过30个，需要分表。（30根据数据量来变动）
+
+        因为对于数据引擎来说，硬盘操作是一个非常大的瓶颈。所以数据变得紧凑对于这种情况是非常有帮助的。
+    
+    7.数据量大需要拆表（与列无关，上点讲的是列）
+
+        比如用户日志、订单表等大型数据表。可以考虑按照年(table_2017)、月(table_2017_08)、周(table_2017_1)、天(table_2017_08_11)来分。
+
+        当然我们也需要一张汇总表。
+    
+    8.建立索引
+
+        索引这门学问就大了，这里我只说一部分。
+
+        1.能使用复合索引的就使用复合索引
+
+            因为你的查询条件拥有两个字段或以上时，对每个字段单独建立索引的效率比复合索引差很多，而且复合索引还可以复用，下面会说到。
+
+        2.复合索引是最左原则
+
+            什么是最左原则。就是你的复合索引有两个字段 a与b 
+            那么这个索引就可以变成 a索引、a与b的索引。
+            语句上来讲就是 where a=*** 跟where a=*** and b=*** 都可以使用到索引而where b=***不行
+
+    9....
+
+        优化的建议太多，暂时就到这里咯，可以说是未完待续。我会一直跟进这篇文章。当然也欢迎小伙伴们留言提供更多的意见。
+
+### The End
+
+    今天是周五，辛苦的一周即将过去。大家周末都会在做什么呢，是看电影、吃饭、王者荣耀、喝咖啡、聚餐、郊游、还是做饭呢。
+
