@@ -35,6 +35,16 @@ header-img: "img/post-23/bg.png"
 
         service mysql restart
 
+    3.也许你还需要这么做，修改root账户允许远程连接。
+
+        mysql -u root -p****  p后面没有空格
+
+        use mysql
+
+        update user set host = '%' where user = 'root'
+
+        flush privileges
+
 ### 一些注意点
 
     这次的安装我是在本地开发机的，发现连接速度实在是慢到没朋友。因为是局域网，所以排除网络问题。于是去官网找答案，之后发现有这面这段文字。
