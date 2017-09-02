@@ -1,0 +1,212 @@
+---
+layout:     post
+title:      "让你的python代码pythonic"
+subtitle:   "优雅、明确、简单"
+date:       "2017-09-02"
+author:     "TuoX"
+header-img: "img/post-25/bg.png"
+---
+
+
+Python的设计哲学是：优雅、明确、简单。因此，Perl语言中“总是有多种方法来做同一件事”的理念在Python开发者中通常是难以忍受的。Python开发者的哲学是“用一种方法，最好是只有一种方法来做一件事”。在设计Python语言时，如果面临多种选择，Python开发者一般会拒绝花俏的语法，而选择明确的没有或者很少有歧义的语法。由于这种设计观念的差异，Python源代码通常被认为比Perl具备更好的可读性，并且能够支撑大规模的软件开发。这些准则被称为Python格言。在Python解释器内运行import this可以获得完整的列表。
+
+所以第一个观点，能简单实现的就简单，抛弃一切复杂的想法。
+
+今天我们要讲解的就是怎么把python写的pythonic(大蟒蛇)。
+
+### 简洁的语法以及弱化类型的概念
+
+    1.方法没有大括号
+    2.结尾不需要；
+    3.定义变量不需要类型申请
+
+### 三元运算符
+
+    为什么要首先说这个，因为python是没有三元运算符的。但是有其他的代替方式。
+
+    print 2 if a else 1
+
+    这个正好跟python的设计实现不谋而合，能用一种方式表示的，就不需要在有其他的方式。
+
+    所以python没有switch
+
+### 判断
+
+    一般是这么写的
+
+    name =['1','2']
+
+    if name is not None and len(name)>0:
+        .....
+
+    pythonic
+
+    例如：
+    a=1
+    if a:
+        print u'非0'
+    
+    以下说的是正确的情况
+
+    1.字符串 任意非空字符串
+    2.数值   任意非0数值
+    3.容器（[] () {} set()）   任意非空容器
+
+### 链式比较
+
+    a=3
+    b=1
+
+    一般我们是这么做
+
+    b>=1 and b<=a and a<5
+
+    pythonic 
+
+    1<=b<=a<5
+
+### 值交换
+
+    一般我们会定义一个变量来存值，然后进行变量的交换
+
+    temp = a
+    a = b
+    b = temp
+
+    pythonic
+
+    a,b = b,a
+
+### 切片
+
+    存在一个list： l = ['Michael', 'Sarah', 'Tracy', 'Bob', 'Jack']
+
+    需要取前面n个元素
+
+    not pythonic
+        
+        r = []
+        n = 3
+        for i in range(n):
+            r.append(L[i])
+
+    pythonic
+
+        l[0:n]
+
+    切片的功能不仅仅与如此
+
+        可以进行倒着取值，倒数的第一个数的索引为为-1
+        切片一共可以有三个参数
+        第一个参数：开始索引
+        第二个参数：结束索引
+        第三个参数：每隔几个取值
+
+
+### 列表生成式
+
+    假设你需要求数组中每个元素的二次方
+
+    首先我们可以用list(range(1, 11))来生成[1,2....10]
+
+    not pythonic的方法是这样的
+
+        l = []
+
+        for x in range(1, 11):
+           l.append(x * x)
+
+    pythonic 
+
+    [x * x for x in range(1, 11)]
+    
+### 字典的默认值
+
+    dic={'name':'11'}
+
+    如果你想对一个字典的值进行加1
+
+    not pythonic
+
+        if 'age' in dic:
+            dic['age'] += 1
+        else:
+            dic['age'] = 1
+
+    pythonic
+
+        dic['age'] = dic.get('age',0) + 1
+
+### for else
+
+    else执行的是在for循环中没有中断的情况
+
+    not pythonic
+
+        find = False
+        for x in xrange(1,100):
+            if x == 6:
+                find = True
+                print 'find 6'
+                break
+        if not find:
+            print 'can not find 6!'
+
+    pythonic
+
+        for x in xrange(1,100):
+            if x == 6:
+                print 'find 6'
+                break
+        else:
+            print 'can not find 6!'
+
+### enumerate
+
+    使用这个方法可以一次次把索引跟值取出来
+
+    array = [1, 2, 3, 4, 5]
+
+    not pythonic
+
+        for i in xrange(len(array)):
+            print i, array[i]
+
+    pythonic
+
+        for i, e in enumerate(array,0):
+            print i, e
+    
+    enumerate的第二个参数是指定起始位置
+
+### 使用zip创建键值对
+
+    keys = ['Name', 'Sex', 'Age']
+    values = ['Tim', 'Male', 23]
+
+    not pythonic
+
+        dic = {}
+        for i,e in enumerate(keys):
+            dic[e] = values[i]
+
+    pythonic
+
+        dic = dict(zip(keys, values))
+
+### 更多
+
+    num_list = [1,2,3,4,5] 
+    求和
+    sum = sum(num_list)
+    求最大值
+    max_num = max(num_list)
+    求最小值
+    min_num = min(num_list)
+
+    ......
+
+### 总结
+
+    如果你已经厌倦了重复、复杂的语法，想体验极简的代码，那么python一定是一个好选择。
+    如果你跟我一样是一个懒人程序员，那么python一定会给你带来惊喜。
