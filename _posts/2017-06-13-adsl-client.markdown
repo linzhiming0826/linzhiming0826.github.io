@@ -48,7 +48,9 @@ vi /etc/tinyproxy/tinyproxy.conf
 <img src="/img/post-11/config1.png"/>
 <p>这个是代理端口，我设置成6666.就是需要点不一样。</p>
 <img src="/img/post-11/config2.png"/>
-<p>这个是允许的ip，我直接去掉允许所有的访问，为了测试方便。当然你也设置成只有你的服务器可以访问。之后，我们重启一下服务，就可以让设置生效啦。</p>
+<p>这个是允许的ip，我直接去掉允许所有的访问，为了测试方便。当然你也设置成只有你的服务器可以访问。</p>
+<p>其次将User nobody修改为User root。Group nogroup注释掉。</p>
+<p>之后，我们重启一下服务，就可以让设置生效啦。</p>
 ```linux
 service tinyproxy start
 ```
