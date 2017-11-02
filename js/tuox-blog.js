@@ -1,4 +1,3 @@
-
 // Tooltip Init
 $(function() {
     $("[data-toggle='tooltip']").tooltip();
@@ -359,8 +358,8 @@ $('#name').focus(function() {
                         var foundValidator = false;
                         message =
                             (
-                            message ? message : "'" + el + "' validation failed <!-- Add attribute 'data-validation-" + el.toLowerCase() + "-message' to input to change this message -->"
-                        );
+                                message ? message : "'" + el + "' validation failed <!-- Add attribute 'data-validation-" + el.toLowerCase() + "-message' to input to change this message -->"
+                            );
 
                         $.each(
                             settings.validatorTypes,
@@ -979,21 +978,21 @@ $('#name').focus(function() {
 
 // make all images responsive
 $(function() {
-	$("img").addClass("img-responsive");
+    $("img").addClass("img-responsive");
 });
 
 // responsive tables
 $(document).ready(function() {
-	$("table").wrap("<div class='table-responsive'></div>");
-	$("table").addClass("table");
+    $("table").wrap("<div class='table-responsive'></div>");
+    $("table").addClass("table");
 });
 
 // responsive embed videos
-$(document).ready(function () { 
+$(document).ready(function() {
     $('iframe[src*="youtube.com"]').wrap('<div class="embed-responsive embed-responsive-16by9"></div>');
-	$('iframe[src*="youtube.com"]').addClass('embed-responsive-item');
+    $('iframe[src*="youtube.com"]').addClass('embed-responsive-item');
     $('iframe[src*="vimeo.com"]').wrap('<div class="embed-responsive embed-responsive-16by9"></div>');
-	$('iframe[src*="vimeo.com"]').addClass('embed-responsive-item');
+    $('iframe[src*="vimeo.com"]').addClass('embed-responsive-item');
 });
 
 // Floating label headings for the contact form
@@ -1035,4 +1034,32 @@ jQuery(document).ready(function($) {
                 this.previousTop = currentTop;
             });
     }
+});
+
+//
+$(function() {
+    var names = new Array();
+    var urls = new Array();
+    //将文章以及链接添加到一个数组
+    $.getJSON("/search.json").done(function(data) {
+        for (var index in data) {
+            var item = data[index];
+            names.push(item.title);
+            urls.push(item.url);
+        }
+    }).error(function(e) { console.log("search init fail"); });
+    //注册搜索事件
+    $("#search-content").typeahead({
+        source: names,
+        afterSelect: function(item) {
+            $('#my-modal').modal('hide');
+            window.open(urls[names.indexOf(item)]);
+            $('#search-content').val('');
+            return item;
+        }
+    });
+    //绑定搜索按钮事件
+    $("#search").click(function() {
+        $('#my-modal').modal({ 'show': true });
+    });
 });

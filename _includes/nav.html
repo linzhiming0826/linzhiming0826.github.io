@@ -15,19 +15,26 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                <li><a href="JavaScript:void(0);" id="search"><span class="glyphicon glyphicon-search"></span></a></li>
                 <li>
                     <a href="{{ site.baseurl }}/">Home</a>
                 </li>
-                {% for page in site.pages %}{% if page.title %}
-				{% if page.url != '/404.html' %}
+                {% for page in site.pages %}{% if page.title %} {% if page.url != '/404.html' %}
                 <li>
                     <a href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
                 </li>
-				{% endif %}
-                {% endif %}{% endfor %}
+                {% endif %} {% endif %}{% endfor %}
             </ul>
         </div>
         <!-- /.navbar-collapse -->
     </div>
     <!-- /.container -->
 </nav>
+
+<div id="my-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <input id="search-content" type="text" style="width:100%;">
+        </div>
+    </div>
+</div>
