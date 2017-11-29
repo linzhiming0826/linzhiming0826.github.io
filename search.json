@@ -4,7 +4,7 @@ layout: null
 [
 	{% for post in site.posts %}
 	{
-		"title" : "{{ post.title }} written in {{ post.date | date: "%Y%m%d" }}",
+		"title" : "{{ post.title }} - {{ post.subtitle }} written in {{ post.date | date: "%Y%m%d" }}",
 		"url" : "{{ post.url }}"
 	}
 	{% if forloop.rindex != 1  %}
