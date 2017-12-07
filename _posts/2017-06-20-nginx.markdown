@@ -74,6 +74,16 @@ service nginx restart
 
 ![result](/img/post-16/result.png)
 
+6.一些基本命令
+
+    service nginx start         #开启nginx服务
+    service nginx stop          #停止nginx服务
+    service nginx restart       #重启nginx服务
+    service nginx reload        #重载nginx服务
+    nginx -t                    #测试配置是否正常
+
+    更多命令 可以使用nginx -h查看
+
 ### 总结
 
 nginx非常强大，这篇文章只是一个粗浅的demo，大家可以通过查询资料、文档来学习、配置等。不懂不可怕，可怕的是不懂而不去学习。
