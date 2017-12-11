@@ -140,4 +140,7 @@ supervisorctl update
 
 supervisorctl tail -f shadowsocks stderr
 查看标准错误输出。
+
+supervisorctl fg xxx
+把某个进程在前台显示，经常可以看一些程序的输出，特别好用。
 ```
