@@ -143,4 +143,7 @@ supervisorctl tail -f shadowsocks stderr
 
 supervisorctl fg xxx
 把某个进程在前台显示，经常可以看一些程序的输出，特别好用。
+
+supervisorctl help
+查看帮助
 ```
