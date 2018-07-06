@@ -102,7 +102,15 @@ python setup.py check
 python setup.py sdist upload
 ```
 
-8.rst写法说明
+8.安装
+```bash
+pip install pddsdk
+```
+神奇的发现，自己写的包也可以通过这种方式安装，是不是特别有成就感，哈哈哈！
+
+9.rst写法说明
+
+rst的写法与markdown的写法还有所不同，所以特意提供文档说明。
 
 [链接](http://docutils.sourceforge.net/docs/user/rst/quickref.html)
 
