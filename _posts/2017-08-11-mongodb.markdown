@@ -119,7 +119,7 @@ header-img: "img/post-22/bg.png"
 
     1.rm -rf /var/lib/mongodb/mongod.lock 
 
-    2.mongod --dbpath /var/lib/mongodb/
+    2.mongod --dbpath /var/lib/mongodb/ # /var/lib/mongodb/为数据真实存放位置
 
     3.打开另外一个终端，输入mongo即可
 
