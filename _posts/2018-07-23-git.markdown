@@ -1,0 +1,155 @@
+---
+layout:     post
+title:      "线上发布自动化"
+subtitle:   "创建git仓库、自动更新钩子"
+date:       "2018-07-23"
+author:     "TuoX"
+header-img: "img/post-26/bg.png"
+---
+
+# 背景
+
+我们在开发的时候，往往会需要一个代码托管，代码的发布也一样，当然首选是git。那每次把代码提交到git的时候，如果可以自动更新的话，那有多好，方便省事。
+
+今天我们就分两部分来介绍这个功能：1.搭建远程git 2.钩子的配置
+
+# 实现
+
+1.安装git
+
+    apt install git
+
+2.修改git配置,开启 RSA 认证
+
+    vi /etc/ssh/sshd_config
+
+    找到以下三个配置，保证配置没有被注释
+
+    RSAAuthentication yes
+    PubkeyAuthentication yes
+    AuthorizedKeysFile .ssh/authorized_keys
+
+    让配置生效一下：
+
+    service sshd restart
+
+3.创建git账户
+  
+    id git # 查看是否有git账户
+
+    useradd git 
+
+    passwd git # 修改密码也可用这个
+
+4.创建git仓库
+
+    cd /home/publish
+
+    mkdir api.git
+
+    git init api.git # 进行仓库的初始化
+
+    chown -R git:git api.git # 进行目录的授权
+
+5.进行配置的修改
+
+    1).允许post，git默认是不允许post的
+
+    cd api.git
+
+    git config receive.denyCurrentBranch ignore
+
+    或者修改配置文件 
+
+    vi .git/config
+
+    添加以下配置
+
+    [receive]
+    
+    denyCurrentBranch = ignore
+
+    2).新增钩子配置文件
+
+    cd api.git/.git/hooks
+
+    cp post-update.sample post-update
+
+    vi post-update
+
+    添加以下内容
+
+    cd ..
+    env -i git reset --hard # 每次回滚至最新版本
+
+6.创建本地的ssh秘钥
+
+    1).打开git bash
+
+    2).ssh-keygen # 创建秘钥
+
+    3).目录为:C:\Users\电脑的用户名\.ssh
+
+        id_rsa 为私钥
+
+        id_rsa.pub 为公钥
+
+7.将秘钥导到服务端
+
+    1).由第2步修改配置，我们知道存放秘钥的位置是 %h/.ssh/authorized_keys，也就是/home/git/.ssh/authorized_keys
+
+    2).创建目录
+
+    mdkir -p /home/git/.ssh
+
+    3).赋予权限
+
+    chown -R git:git .ssh
+
+    4).在git bash客户端输入导入秘钥命令
+
+    ssh git@**** 'cat >> .ssh/authorized_keys' < ~/.ssh/id_rsa.pub # ****是服务器地址
+
+8.clone项目
+
+    git clone git@****:/home/publish/api.git # ****是服务器地址
+
+9.进行项目的提交
+
+    git add ***
+
+    git commit -m "initial commit"
+
+    git remote add *** ssh://git@***:22/home/publish/api.git
+
+    git push *** master
+
+10.小乌龟的配置
+
+    有些小伙伴比较喜欢用小乌龟，那这里就说一下怎么把pub的密码转成ppk秘钥
+
+    1).打开PuTTYgen,一般装了小乌龟就已经有这个软件了
+
+    2).接着打开软件的conversions=>import key 选中刚刚我们存放秘钥的位置，选择私钥
+
+    3).可以看到已经解析出来了，接着我们保存Save private key
+
+11.禁用git用户的shell登陆
+
+    出于安全考虑，我们创建的git用户不允许登录shell
+    
+    1).编辑/etc/passwd文件
+
+    vi /etc/passwd
+
+    2).修改内容
+
+    git:x:1000:1000::/home/git:/bin/bash
+
+    修改成
+    
+    git:x:1000:1000::/home/git:/usr/bin/git-shell  # 前面的1000:1000，可能有所不同，不需要根据这个改。
+
+# 结语
+
+懒是进步的动力，只有想着怎么偷懒，才会不断的改进程序。

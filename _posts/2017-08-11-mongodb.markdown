@@ -69,6 +69,15 @@ header-img: "img/post-22/bg.png"
 
         service mongodb restart
 
+    4.修改密码
+
+        mongo
+
+        use admin 
+
+        db.changeUserPassword("用户名","新密码")
+         
+
 ### 连接
 
 我这边推荐一个很轻量级的连接工具robomongo [点我](https://robomongo.org/download)
@@ -98,6 +107,21 @@ header-img: "img/post-22/bg.png"
     3.service mongodb restart
 
     首先删除锁文件、其次修复问题、最后重启服务
+
+
+    如果mongod --repair报错：
+
+    ERROR: dbpath (/data/db) does not exist.
+    Create this directory or give existing directory in --dbpath.
+    See http://dochub.mongodb.org/core/startingandstoppingmongo
+
+    试试以下方法：
+
+    1.rm -rf /var/lib/mongodb/mongod.lock 
+
+    2.mongod --dbpath /var/lib/mongodb/ # /var/lib/mongodb/为数据真实存放位置
+
+    3.打开另外一个终端，输入mongo即可
 
 
 ### 闲谈

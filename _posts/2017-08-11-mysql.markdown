@@ -44,6 +44,10 @@ header-img: "img/post-23/bg.png"
         update user set host = '%' where user = 'root'
 
         flush privileges
+    
+    4.修改root密码 
+
+        mysqladmin -uroot -p旧密码 password 新密码
 
 ### 一些注意点
 
