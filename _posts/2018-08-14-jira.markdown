@@ -1,0 +1,80 @@
+---
+layout:     post
+title:      "项目管理神器"
+subtitle:   "jira的安装部署破解"
+date:       "2018-08-14"
+author:     "TuoX"
+header-img: "img/post-26/bg.png"
+---
+
+项目管理是工作安排，记录，修改bug的一个好的方式，然后目前市场比较好用的就是禅道与jira，今天就介绍下jira的安装。
+
+***
+
+废话不多说直接进入主题,本文以7.3.6为例
+
+## 下载jira
+
+    输入命令
+
+    wget https://www.atlassian.com/software/jira/downloads/atlassian-jira-software-7.3.6-x64.bin
+
+### 安装
+
+    1.进行文件的授权
+
+    chmod +x atlassian-jira-software-7.3.6-x64.bin
+
+    2.进行文件的安装
+
+    ./atlassian-jira-software-7.3.6-x64.bin
+
+    3.可以进行默认的安装或者自定义
+
+    4.将mysql驱动放在/opt/atlassian/jira/atlassian-jira/WEB-INF/lib下
+
+
+### 配置
+
+    1.打开网站 ***:5000 自定义里面端口，我这里设置成5000
+
+    2.根据服务器id获取key
+      
+      根据提示去网站注册一个账号，申请一下免费使用30天的key
+    
+    3.数据库配置  选择mysql
+
+    4.完成，进入站点
+
+### 破解
+
+    mysql驱动以及破解文件 [地址](/doc/confluence.zip)
+
+    1.将atlassian-extras-3.2.jar覆盖至/opt/atlassian/jira/atlassian-jira/WEB-INF/lib
+
+    2.重启服务 
+
+        service jira stop
+
+        service jira start
+
+### 一些注意点
+
+    1.由于偶尔会出现重新安装的情况，所以这边说下怎么重新安装
+
+      1).service jira stop
+
+      2).rm -rf /opt/atlassian/jira/
+
+      3).rm -rf /var/atlassian/application-data/jira/
+
+      4).删除原来的数据库
+
+      5). ./atlassian-jira-software-7.3.6-x64.bin
+
+    2.如果忘记了停止服务就删除了文件夹，导致无法使用8090端口
+
+      1). ps -ef|grep jira
+
+      2). kill -s 9 *****
+
