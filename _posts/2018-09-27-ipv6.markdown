@@ -1,0 +1,77 @@
+---
+layout:     post
+title:      "苹果审核ipv6"
+subtitle:   "阿里云、HE配置ipv6"
+date:       "2018-09-27"
+author:     "TuoX"
+header-img: "img/post-26/bg.png"
+---
+
+今天跟大家介绍一下阿里云如何开启ipv6以及配置ipv6站点访问。
+
+***
+
+## 服务器开启ipv6
+
+    以阿里云的ubuntu 16.04为例:
+
+    1.vi /etc/sysctl.conf
+
+        将  net.ipv6.conf.all.disable_ipv6 = 0
+            net.ipv6.conf.default.disable_ipv6 = 0
+            net.ipv6.conf.lo.disable_ipv6 = 0
+        三个值都设置成0
+
+    2.sysctl -p
+      
+      使配置生效
+
+    3.ifconfig 
+     
+      可以看到inet6已经生效
+    
+
+### HE免费ipv6申请
+
+    1.访问https://www.tunnelbroker.net进行注册
+
+    2.选择Create Regular Tunnel 创建一个新的隧道
+
+        .1)输入阿里云的公网ip进行验证是否可以使用
+
+        .2)选择地区，香港的我申请的时候已经满了，所以只能申请了另外的ip，如果不知道哪个快，可以在阿里云服务器上面ping一下
+
+    3.查看创建好的隧道那边的Example Configurations 中的Linux-net-tools 进行配置
+
+        modprobe ipv6
+
+        ip tunnel add he-ipv6 mode sit remote HE的ip local 阿里云的ip ttl 255
+
+        ip link set he-ipv6 up
+
+        ip addr add ipv6的地址 dev he-ipv6
+
+        ip route add ::/0 dev he-ipv6
+
+        ip -f inet6 addr
+
+    4.进行ping尝试
+
+        ping6 -c 5 ipv6.google.com
+
+    5.在域名服务商解析后台那边添加自己网站的配置，类型为AAAAA，地址选择刚刚我们设置的ipv6地址，记得去除后面的/64
+
+    6.nginx配置添加端口监听 
+
+        server{
+            listen [::]:80 ipv6only=on;
+            listen [::]:443 ipv6only=on;
+            ...
+        }
+
+    7.访问http://ipv6-test.com/validate.php 进行ipv6的测试
+
+        https://***.com
+
+    
+
