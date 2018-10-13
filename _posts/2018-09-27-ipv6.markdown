@@ -87,7 +87,7 @@ header-img: "img/post-26/bg.png"
 
     8.一些技巧
         
-         ip tun del he-ipv6  进行虚拟网站中转的删除，用于失效重新配置的问题 ， he-ipv6是网卡名称，sit0无法删除，属于正常情况，因为属于系统级别
+         ip tun del he-ipv6  进行虚拟网站中转的删除，用于失效重新配置的问题（No buffer space available） ， he-ipv6是网卡名称，sit0无法删除，属于正常情况，因为属于系统级别。
 
     
 
