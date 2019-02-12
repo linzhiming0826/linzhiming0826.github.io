@@ -45,7 +45,7 @@ header-img: "img/post-26/bg.png"
 
         modprobe ipv6
 
-        ip tunnel add he-ipv6 mode sit remote 服务器ipv4地址 local 阿里云的ip ttl 255
+        ip tunnel add he-ipv6 mode sit remote 服务器ipv4地址 local 阿里云的ip(需为内网地址) ttl 255
 
         ip link set he-ipv6 up
 
