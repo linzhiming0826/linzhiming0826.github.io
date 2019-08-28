@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "百万请求下的优化"
-subtitle:   "linux以及nginx设置"
+subtitle:   "linux内核参数、linux tcp网络参数、nginx配置"
 date:       "2019-08-28"
 author:     "TuoX"
 header-img: "img/post-26/bg.png"
