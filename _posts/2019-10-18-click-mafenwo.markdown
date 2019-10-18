@@ -63,15 +63,15 @@ header-img: "img/post-26/bg.png"
 
     通过请求的域名中的部分路由 flightList/search 定位到一个变量（在js中找到,index.***.js）
 
-    ![](/img/post-29/route.jpg)
+![](/img/post-29/route.jpg)
 
     接着通过参数分析我们定义到获取请求的方法
 
-    ![](/img/post-29/flight_list.jpg)
+![](/img/post-29/flight_list.jpg)
 
     这个js代码看着复杂，其实不会，因为是被混淆过的，webpack打包之后的代码，但是我们也可以利用工具进行一步步的抽丝剥茧。
 
-    ![](/img/post-29/break.jpg)
+![](/img/post-29/break.jpg)
 
     利用chrome的提调试，进行方法的定位与分析
 
@@ -275,7 +275,7 @@ header-img: "img/post-26/bg.png"
 
 ## 数据结果
 
-    ![](/img/post-29/break.jpg)
+![](/img/post-29/result.jpg)
 
 
 # 结束
