@@ -49,6 +49,17 @@ header-img: "img/post-26/bg.png"
 
     docker run -e ES_JAVA_OPTS="-Xms1024m -Xmx1024m" -d -p 9200:9200 -p 9300:9300 -v /data/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml -v /data/elasticsearch/data:/usr/share/elasticsearch/data --name es  registry.docker-cn.com/library/elasticsearch
 
+    或者通过配置文件修改内存的大小
+
+    vi /usr/share/elasticsearch/config/jvm.options
+
+    -Xms2g
+
+    -Xmx2g
+
+    如果找到配置文件，可以使用
+    find / -name jvm.options
+
    7.修改配置文件，以后就可以直接在/data/elasticsearch/config/elasticsearch.yml 下直接修改配置文件
 
    8.配置完全，重启一下docker即生效
