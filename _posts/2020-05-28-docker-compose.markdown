@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "dokcer多容器管理工具"
+title:      "docker多容器管理工具-docker-compose"
 subtitle:   "怀念supervisor的最好替代品"
 date:       "2020-05-28"
 author:     "TuoX"
