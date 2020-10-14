@@ -35,6 +35,8 @@ header-img: "img/post-26/bg.png"
     
     fs.file-max = 1048576
 
+    sysctl -p 执行一下更新
+
     4./etc/systemd/system.conf 设置服务最大文件句柄数
 
     DefaultLimitNOFILE=1048576
