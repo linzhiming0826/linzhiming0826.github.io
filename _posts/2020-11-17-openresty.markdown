@@ -128,6 +128,7 @@ header-img: "img/post-26/bg.png"
         local http = require "resty.http"
         local httpc = http.new()
         local res, err = httpc:request_uri(url, {
+            ssl_verify = false,
             method = “GET”,
             headers = {
             ["Content-Type"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
