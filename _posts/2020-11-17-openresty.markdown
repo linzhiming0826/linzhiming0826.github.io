@@ -56,7 +56,7 @@ header-img: "img/post-26/bg.png"
     以路由 /mirror/url/*** 为例，后面的***就是我们的图片地址
 
     location /mirror/url/ {
-            resolver 8.8.8.8;
+            resolver 8.8.8.8 ipv6=off;
             expires 3d;
             if ( $request_uri ~* \/mirror\/url\/(.*?)$ ) { ## 正则匹配
                 set $image_url $1; # 设置路由参数
