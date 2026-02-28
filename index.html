@@ -74,10 +74,6 @@
       filter: saturate(1.05) contrast(1.02);
     }
 
-    .bg-video-mobile {
-      display: none;
-    }
-
     .page::after {
       z-index: -2;
       background:
@@ -248,23 +244,6 @@
         margin-top: 16px;
       }
 
-      .bg-video-desktop {
-        display: none;
-      }
-
-      .bg-video-mobile {
-        display: block;
-      }
-    }
-
-    @media (min-width: 681px) {
-      .bg-video-mobile {
-        display: none;
-      }
-
-      .bg-video-desktop {
-        display: block;
-      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -277,15 +256,9 @@
 
 <body>
   <main class="page" id="top">
-    <div class="bg-video bg-video-desktop" aria-hidden="true">
-      <video autoplay muted playsinline preload="auto" poster="./img/dao-home-bg.jpg">
-        <source src="./img/dao-bg-pc.mp4" type="video/mp4" />
-      </video>
-    </div>
-    <div class="bg-video bg-video-mobile" aria-hidden="true">
-      <video autoplay muted playsinline preload="auto" poster="./img/dao-home-bg.jpg">
-        <source src="./img/dao-bg-m.mp4" type="video/mp4" />
-      </video>
+    <div class="bg-video" aria-hidden="true">
+      <video id="bgVideo" autoplay muted playsinline preload="metadata" poster="./img/dao-home-bg.jpg"
+        data-src-pc="./img/dao-bg-pc.mp4" data-src-m="./img/dao-bg-m.mp4"></video>
     </div>
     <div class="grain"></div>
 
@@ -341,13 +314,42 @@
 
     setTimeout(typeDate, 420);
 
-    document.querySelectorAll(".bg-video video").forEach((video) => {
-      video.addEventListener("ended", () => {
-        const lastFrameTime = Number.isFinite(video.duration) ? Math.max(0, video.duration - 0.001) : video.currentTime;
-        video.currentTime = lastFrameTime;
-        video.pause();
+    const bgVideo = document.getElementById("bgVideo");
+    if (bgVideo) {
+      const mobileMedia = window.matchMedia("(max-width: 680px)");
+      let loadedVariant = "";
+
+      const resolveVariant = () => (mobileMedia.matches ? "m" : "pc");
+
+      const applyBgVideoSource = () => {
+        const variant = resolveVariant();
+        if (variant === loadedVariant) return;
+
+        const src = variant === "m" ? bgVideo.dataset.srcM : bgVideo.dataset.srcPc;
+        if (!src) return;
+
+        loadedVariant = variant;
+        bgVideo.src = src;
+        bgVideo.load();
+        const playPromise = bgVideo.play();
+        if (playPromise && typeof playPromise.catch === "function") {
+          playPromise.catch(() => { });
+        }
+      };
+
+      bgVideo.addEventListener("ended", () => {
+        const lastFrameTime = Number.isFinite(bgVideo.duration) ? Math.max(0, bgVideo.duration - 0.001) : bgVideo.currentTime;
+        bgVideo.currentTime = lastFrameTime;
+        bgVideo.pause();
       });
-    });
+
+      applyBgVideoSource();
+      if (typeof mobileMedia.addEventListener === "function") {
+        mobileMedia.addEventListener("change", applyBgVideoSource);
+      } else if (typeof mobileMedia.addListener === "function") {
+        mobileMedia.addListener(applyBgVideoSource);
+      }
+    }
   </script>
 </body>
 
