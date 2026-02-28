@@ -1,0 +1,15 @@
+{
+  "name": "daopen-remotion-bg",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "render:pc": "remotion render src/index.tsx SunriseLandscapePC ../img/dao-bg-pc.mp4 --codec=h264 --crf=20",
+    "render:m": "remotion render src/index.tsx SunriseLandscapeM ../img/dao-bg-m.mp4 --codec=h264 --crf=20"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.429",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "remotion": "^4.0.310"
+  }
+}
