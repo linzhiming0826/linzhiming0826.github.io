@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="DAOPEN.AI" />
   <title>DAOPEN.AI</title>
+  <link rel="preload" as="video" href="./img/dao-bg-m.mp4" type="video/mp4" media="(max-width: 680px)" />
+  <link rel="preload" as="video" href="./img/dao-bg-pc.mp4" type="video/mp4" media="(min-width: 681px)" />
   <style>
     :root {
       --ink: #5b3613;
@@ -50,11 +52,12 @@
 
     .page::before {
       z-index: -4;
-      background-image: url("./img/dao-home-bg.jpg");
-      background-size: cover;
-      background-position: center 52%;
-      transform: scale(1.05);
-      filter: saturate(1.05) contrast(1.02);
+      background:
+        radial-gradient(circle at 50% 62%, rgba(255, 238, 182, 0.62) 0%, rgba(255, 218, 141, 0.28) 34%, rgba(255, 192, 98, 0.12) 56%, rgba(255, 176, 84, 0) 74%),
+        linear-gradient(180deg, #f7dca4 0%, #edc17a 42%, #cb8a3d 100%);
+      opacity: 1;
+      transition: opacity 780ms cubic-bezier(.2, .7, 0, 1);
+      animation: dawn-breathe 2.6s ease-in-out infinite;
     }
 
     .bg-video {
@@ -63,6 +66,17 @@
       z-index: -3;
       pointer-events: none;
       overflow: hidden;
+      opacity: 0;
+      transition: opacity 780ms cubic-bezier(.2, .7, 0, 1);
+      will-change: opacity;
+    }
+
+    .page.video-ready .bg-video {
+      opacity: 1;
+    }
+
+    .page.video-ready::before {
+      opacity: 0;
     }
 
     .bg-video video {
@@ -99,6 +113,8 @@
       width: min(1240px, calc(100% - 52px));
       margin: 0 auto;
       padding: 24px 0 40px;
+      position: relative;
+      z-index: 1;
     }
 
     .top {
@@ -192,6 +208,18 @@
       }
     }
 
+    @keyframes dawn-breathe {
+
+      0%,
+      100% {
+        filter: saturate(1.02) contrast(1.01);
+      }
+
+      50% {
+        filter: saturate(1.08) contrast(1.04);
+      }
+    }
+
     .foot {
       margin-top: 14px;
       text-align: center;
@@ -250,6 +278,10 @@
       .bg-video {
         display: none;
       }
+
+      .page::before {
+        animation: none;
+      }
     }
   </style>
 </head>
@@ -257,11 +289,10 @@
 <body>
   <main class="page" id="top">
     <div class="bg-video" aria-hidden="true">
-      <video id="bgVideo" autoplay muted playsinline preload="metadata" poster="./img/dao-home-bg.jpg"
-        data-src-pc="./img/dao-bg-pc.mp4" data-src-m="./img/dao-bg-m.mp4"></video>
+      <video id="bgVideo" autoplay muted playsinline preload="auto" data-src-pc="./img/dao-bg-pc.mp4"
+        data-src-m="./img/dao-bg-m.mp4"></video>
     </div>
     <div class="grain"></div>
-
     <div class="wrap">
       <header class="top fade">
         <a class="brand" href="#top">
@@ -316,10 +347,16 @@
 
     const bgVideo = document.getElementById("bgVideo");
     if (bgVideo) {
+      const pageRoot = document.getElementById("top");
       const mobileMedia = window.matchMedia("(max-width: 680px)");
       let loadedVariant = "";
+      let sourceToken = 0;
 
       const resolveVariant = () => (mobileMedia.matches ? "m" : "pc");
+      const revealVideo = (token) => {
+        if (token !== sourceToken || !pageRoot) return;
+        pageRoot.classList.add("video-ready");
+      };
 
       const applyBgVideoSource = () => {
         const variant = resolveVariant();
@@ -329,6 +366,13 @@
         if (!src) return;
 
         loadedVariant = variant;
+        sourceToken += 1;
+        const token = sourceToken;
+        if (pageRoot) {
+          pageRoot.classList.remove("video-ready");
+        }
+        bgVideo.addEventListener("loadeddata", () => revealVideo(token), { once: true });
+        bgVideo.addEventListener("canplay", () => revealVideo(token), { once: true });
         bgVideo.src = src;
         bgVideo.load();
         const playPromise = bgVideo.play();
@@ -341,6 +385,12 @@
         const lastFrameTime = Number.isFinite(bgVideo.duration) ? Math.max(0, bgVideo.duration - 0.001) : bgVideo.currentTime;
         bgVideo.currentTime = lastFrameTime;
         bgVideo.pause();
+      });
+
+      bgVideo.addEventListener("error", () => {
+        if (pageRoot) {
+          pageRoot.classList.remove("video-ready");
+        }
       });
 
       applyBgVideoSource();
